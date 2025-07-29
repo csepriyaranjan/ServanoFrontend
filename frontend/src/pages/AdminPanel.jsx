@@ -10,7 +10,6 @@ const AdminPanel = () => {
 
   useEffect(() => {
     fetchBookings();
-    // eslint-disable-next-line
   }, []);
 
   const fetchBookings = async () => {

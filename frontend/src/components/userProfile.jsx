@@ -70,7 +70,7 @@ const UserProfile = () => {
                 >
                   {booking.status}
                 </span>
-    
+              </div>
               <p className="text-sm text-gray-600">
                 Date: {new Date(booking.bookingDate).toLocaleDateString()} at{" "}
                 {booking.bookingTime}
