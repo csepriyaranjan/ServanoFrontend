@@ -7,7 +7,7 @@ const ProfilePage = () => {
   return (
     <div>
       <Navbar />
-      <userProfile />
+      <UserProfile />
       <Footer />
     </div>
   );

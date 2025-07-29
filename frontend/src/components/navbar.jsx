@@ -53,7 +53,7 @@ const Navbar = () => {
           {/* CTA Button, Profile Icon & Mobile Menu */}
           <div className="flex items-center space-x-4">
             <Link to="/book-services">
-              <button className="bg-blue-600 text-white px-5 py-1.5 font-medium hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap">
+              <button className="bg-blue-600 hidden md:flex text-white px-5 py-1.5 font-medium hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap">
                 Book Service
               </button>
             </Link>
@@ -104,14 +104,12 @@ const Navbar = () => {
               >
                 Contact
               </Link>
-              {/* Profile Icon in Mobile Menu */}
-              <Link
-                to="/profile"
-                className="text-gray-700 hover:text-blue-600 font-medium cursor-pointer flex items-center"
-              >
-                <i className="fas fa-user-circle text-xl mr-2"></i>
-                Profile
-              </Link>
+
+              <Link to="/book-services">
+              <button className="bg-blue-600 w-full text-white px-5 py-1.5 font-medium hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap">
+                Book Service
+              </button>
+            </Link>
             </div>
           </div>
         )}

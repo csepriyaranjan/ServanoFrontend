@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";  
 import  API from "./api";
 
@@ -7,6 +7,7 @@ const BookServices = () => {
 
   const [selectedService, setSelectedService] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState(""); 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const services = [
@@ -67,18 +68,27 @@ const BookServices = () => {
   }, [serviceName]);
 
   const handleBooking = () => {
-    API.post('/bookings/my-bookings', {
+    if (
+      !selectedService ||
+      !selectedVehicle ||
+      !vehicleNumber.trim() ||
+      !selectedDate ||
+      !selectedTime
+    ) {
+      alert("Please fill all required fields including Vehicle No.");
+      return;
+    }
+    API.post('/bookings', {
       service: selectedService,
-      vehicle: selectedVehicle,
-      date: selectedDate,
-      time: selectedTime,
+      vehicleName: selectedVehicle,
+      vehicleNumber: vehicleNumber, 
+      bookingDate: selectedDate,
+      bookingTime: selectedTime,
     })
     .then(response => {
-      // handle success
       alert("Booking confirmed!");
     })
     .catch(error => {
-      // handle error
       alert("Booking failed!");
     });
   };
@@ -134,6 +144,7 @@ const BookServices = () => {
                   </div>
                 ))}
               </div>
+      
             </div>
 
             {/* Vehicle & DateTime Selection */}
@@ -156,8 +167,22 @@ const BookServices = () => {
                     <option value="ford-f150">2023 Ford F-150</option>
                     <option value="mercedes-c300">2021 Mercedes C300</option>
                   </select>
-                  <i className="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
+              </div>
+
+              {/* Vehicle No Input */}
+              <div>
+                <label className="block text-lg font-semibold text-gray-900 mb-4">
+                  Vehicle No
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                  value={vehicleNumber}
+                  onChange={(e) => setVehicleNumber(e.target.value)}
+                  placeholder="Enter your vehicle number"
+                  required
+                />
               </div>
 
               {/* Date Selection */}
@@ -170,6 +195,7 @@ const BookServices = () => {
                   className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
+                  required
                 />
               </div>
 
@@ -182,12 +208,13 @@ const BookServices = () => {
                   {timeSlots.map((time) => (
                     <button
                       key={time}
-                      className={`p-3 border-2 rounded-xl font-medium transition-all cursor-pointer whitespace-nowrap !rounded-button ${
+                      className={`p-3 border-2 rounded-xl font-medium transition-all cursor-pointer whitespace-nowrap ${
                         selectedTime === time
                           ? "border-blue-500 bg-blue-500 text-white shadow-md"
                           : "border-gray-200 hover:border-blue-300 hover:bg-blue-50"
                       }`}
                       onClick={() => setSelectedTime(time)}
+                      required
                     >
                       {time}
                     </button>
