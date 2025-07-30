@@ -19,6 +19,7 @@ export default function AuthPage() {
     try {
       const response = await API.post(endpoint, payload);
       localStorage.setItem("token", response.data.token);
+      console.log("Authentication successful:", response.data);
       window.location.href = "/book-services";
     } catch (error) {
       console.error("Authentication error:", error);

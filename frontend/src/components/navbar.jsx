@@ -80,30 +80,30 @@ const Navbar = () => {
               >
                 Home
               </Link>
-              <a
-                to="#services"
+              <Link
+                to="/#services"
                 className="text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
               >
                 Services
-              </a>
+              </Link>
               <Link
                 to="/about"
                 className="text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
               >
                 About
               </Link>
-              <a 
-                to="#testimonials"
+              <Link
+                to="/#testimonials"
                 className="text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
               >
                 Reviews
-              </a>
-              <a
-                href="#contact"
+              </Link>
+              <Link
+                to="/#contact"
                 className="text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
               >
                 Contact
-              </a>
+              </Link>
 
               <Link to="/book-services">
               <button className="bg-blue-600 w-full text-white px-5 py-1.5 font-medium hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap">
