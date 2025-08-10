@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import Loader from "./loader";
+import API from "./api";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -21,7 +20,7 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("https://formsubmit.co/hasimazatube@gmail.com", form);
+      await API.post("/contact", form);
       alert("Message sent!");
       setForm({
         firstName: "",
@@ -31,8 +30,9 @@ const Contact = () => {
         service: "",
         message: "",
       });
+      
     } catch (error) {
-      alert("Failed to send message.");
+      alert("Failed to send message.",error);
     }
     setLoading(false);
   };
@@ -110,7 +110,7 @@ const Contact = () => {
                     Email Us
                   </h3>
                   <p className="text-gray-600">
-                    info@autocarepro.com
+                    info@servano.com
                     <br />
                     We respond within 2 hours
                   </p>
@@ -120,7 +120,6 @@ const Contact = () => {
           </div>
 
           {/* Contact Form */}
-          { loading && <Loader />}
           <div className="bg-gray-50 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Send Us a Message
