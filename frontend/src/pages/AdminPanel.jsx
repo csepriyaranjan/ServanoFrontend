@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../components/api';
-
-// Replace with your logo path
+import { Link } from 'react-router-dom';
+import Loader from '../components/loader';
 import logo from '../assets/logo.jpg';
 
 const AdminPanel = () => {
@@ -16,11 +16,22 @@ const AdminPanel = () => {
   }, []);
 
   const fetchBookings = async () => {
+    setLoading(true);
     try {
       const res = await API.get('/bookings');
-      setBookings(res.data);
+
+      // Convert all string values to uppercase before setting state
+      const upperCaseBookings = res.data.map(b => ({
+        ...b,
+        user: b.user ? { ...b.user, name: b.user.name?.toUpperCase() } : null,
+        vehicleName: b.vehicleName?.toUpperCase(),
+        vehicleNumber: b.vehicleNumber?.toUpperCase(),
+        status: b.status?.toUpperCase()
+      }));
+
+      setBookings(upperCaseBookings);
     } catch (err) {
-      if (err.response && err.response.status === 403) {
+      if (err.response?.status === 403) {
         navigate('/profile');
       } else {
         console.error('Error fetching bookings', err);
@@ -31,51 +42,76 @@ const AdminPanel = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    setLoading(true);
     try {
-      // Use PUT to update booking status
       await API.put(`/bookings/${id}/status`, { status: newStatus });
       fetchBookings();
     } catch (err) {
-      if (err.response && err.response.status === 403) {
+      if (err.response?.status === 403) {
         navigate('/profile');
       } else {
         console.error('Error updating booking status', err);
       }
+      setLoading(false);
     }
   };
 
-  if (loading) return <p className="text-center text-white">Loading...</p>;
+  const handleDeleteBooking = async (id) => {
+    setLoading(true);
+    try {
+      await API.delete(`/bookings/${id}/delete`);
+      fetchBookings();
+    } catch (err) {
+      if (err.response?.status === 403) {
+        navigate('/profile');
+      } else {
+        console.error('Error deleting booking', err);
+      }
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="bg-gray-900 min-h-screen">
       <header className="bg-gray-950 shadow">
         <div className="max-w-7xl mx-auto justify-between px-4 py-6 flex items-center">
-          <img src={logo} alt="Logo" className="h-10 mr-4" />
-          <h1 className="text-2xl font-bold text-white">Admin Booking Panel</h1>
+          <Link to='/'>
+            <img src={logo} alt="Logo" className="h-12 mr-4" />
+          </Link>
+          <h1 className="text-2xl font-bold text-white">ADMIN PANEL</h1>
         </div>
       </header>
 
       <div className="p-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4 text-white">Admin Booking Panel</h2>
         {bookings.length === 0 ? (
-          <p className="text-gray-300">No bookings found.</p>
+          <p className="text-gray-300">NO BOOKINGS FOUND.</p>
         ) : (
           <div className="space-y-4">
             {bookings.map((booking) => (
               <div key={booking._id} className="p-4 border rounded shadow-md bg-gray-800 border-gray-700">
-                <p className="text-gray-200"><strong>User:</strong> {booking.user?.name || 'N/A'}</p>
-                <p className="text-gray-200"><strong>Vehicle:</strong> {booking.vehicleName} - {booking.vehicleNumber}</p>
-                <p className="text-gray-200"><strong>Date:</strong> {new Date(booking.bookingDate).toLocaleDateString()}</p>
-                <p className="text-gray-200"><strong>Status:</strong></p>
+                <p className="text-gray-200"><strong>USER:</strong> {booking.user?.name || 'N/A'}</p>
+                <p className="text-gray-200"><strong>VEHICLE:</strong> {booking.vehicleName} - {booking.vehicleNumber}</p>
+                <p className="text-gray-200"><strong>DATE:</strong> {new Date(booking.bookingDate).toLocaleDateString()}</p>
+
+                <label className="text-gray-200"><strong>STATUS:</strong></label>
                 <select
                   value={booking.status}
                   onChange={(e) => handleStatusChange(booking._id, e.target.value)}
                   className="mt-1 border rounded px-2 py-1 bg-gray-900 text-white border-gray-600"
                 >
-                  <option value="Pending">Pending</option>
-                  <option value="Accepted">Accepted</option>
-                  <option value="Completed">Completed</option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="ACCEPTED">ACCEPTED</option>
+                  <option value="COMPLETED">COMPLETED</option>
                 </select>
+
+                <button
+                  onClick={() => handleDeleteBooking(booking._id)}
+                  className="ml-4 text-red-500 hover:text-red-700"
+                >
+                  DELETE
+                </button>
               </div>
             ))}
           </div>

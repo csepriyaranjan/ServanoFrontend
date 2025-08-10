@@ -1,6 +1,7 @@
 import  { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";  
 import  API from "./api";
+import Loader from "./loader";
 
 const BookServices = () => {
   const { serviceName } = useParams();
@@ -10,6 +11,9 @@ const BookServices = () => {
   const [vehicleNumber, setVehicleNumber] = useState(""); 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
   const services = [
     {
       name: "Oil Change",
@@ -67,7 +71,10 @@ const BookServices = () => {
     }
   }, [serviceName]);
 
-  const handleBooking = () => {
+  const handleBooking = (e) => {
+    e.preventDefault();
+
+    setLoading(true);
     if (
       !selectedService ||
       !selectedVehicle ||
@@ -87,13 +94,16 @@ const BookServices = () => {
     })
     .then(response => {
       alert("Booking confirmed!");
+      setLoading(false);
     })
     .catch(error => {
       alert("Booking failed!");
+      setLoading(false);
     });
-  };
-
+  };// Replace with actual loading state if needed  
   return (
+    <>
+    {loading && <Loader />}
     <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
@@ -234,6 +244,7 @@ const BookServices = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 

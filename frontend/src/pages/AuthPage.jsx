@@ -2,12 +2,16 @@ import { useState } from "react";
 import API from "../components/api";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
+import Loader from "../components/loader";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+    const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
+    
+   setLoading(true);
 
     const endpoint = isLogin ? "/auth/login" : "/auth/register";
     const payload = {
@@ -21,15 +25,20 @@ export default function AuthPage() {
       localStorage.setItem("token", response.data.token);
       console.log("Authentication successful:", response.data);
       window.location.href = "/book-services";
+
+    setLoading(false);      
     } catch (error) {
       console.error("Authentication error:", error);
       alert("Authentication failed. Please try again.");
+
+      setLoading(false);
     }
   };
 
   return (
     <div>
       <Navbar />
+      {loading && <Loader />}
       <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
         <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
           <h2 className="text-2xl font-bold text-center mb-6">

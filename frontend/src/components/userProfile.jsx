@@ -9,7 +9,18 @@ const UserProfile = () => {
   const fetchBookings = async () => {
     try {
       const res = await API.get("/bookings/my");
-      setBookings(res.data || []);
+
+      // Convert booking text to uppercase
+      const upperCaseBookings = (res.data || []).map(b => ({
+        ...b,
+        service: b.service?.toUpperCase(),
+        vehicleName: b.vehicleName?.toUpperCase(),
+        vehicleNumber: b.vehicleNumber?.toUpperCase(),
+        status: b.status?.toUpperCase(),
+        bookingTime: b.bookingTime?.toUpperCase()
+      }));
+
+      setBookings(upperCaseBookings);
     } catch (error) {
       console.error("Error fetching bookings", error);
     } finally {
@@ -18,17 +29,20 @@ const UserProfile = () => {
   };
 
   const fetchUser = async () => {
-    try { 
+    try {
       const res = await API.get("/auth/profile");
-      setUser(res.data || {});
+      const userData = res.data || {};
+      setUser({
+        ...userData,
+        name: userData.name?.toUpperCase()
+      });
     } catch (error) {
       console.error("Error fetching user data", error);
-      return {};
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     window.location.reload();
   };
 
@@ -38,34 +52,50 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mb-10 mx-auto mt-10 p-6 bg-white rounded-lg shadow">
+    <div className="max-w-4xl mb-10 mx-auto mt-10 p-4 sm:p-6 bg-white rounded-lg shadow">
+      {/* Logout Button */}
       <button
         onClick={handleLogout}
-        className="px-4 py-2  bg-red-500 text-white rounded hover:bg-red-600 float-right"
+        className="w-full sm:w-auto px-4 py-2 mb-4 sm:mb-0 bg-red-500 text-white rounded hover:bg-red-600 float-none sm:float-right"
       >
-        Logout
+        LOGOUT
       </button>
 
-      <h1 className="text-center mt-16">Welcome {user.name}!</h1>
-      <h2 className="text-2xl font-bold mb-6">My Bookings</h2>
+      {/* Welcome Header */}
+      <h1 className="text-center mt-6 sm:mt-16 text-lg sm:text-xl font-bold">
+        WELCOME {user.name || "USER"}!
+      </h1>
+      <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center sm:text-left">
+        BOOKINGS
+      </h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-center">LOADING...</p>
       ) : bookings.length === 0 ? (
-        <p>No bookings found.</p>
+        <p className="text-center">NO BOOKINGS FOUND.</p>
       ) : (
         <ul className="space-y-4">
           {bookings.map((booking) => (
-            <li key={booking._id} className="border p-4 rounded-lg shadow-sm">
-              <div className="flex justify-between">
-                <h3 className="text-lg font-semibold">{booking.service}</h3>
-                <h3 className="text-lg font-semibold">{booking.vehicleName}</h3>
-                <h3 className="text-lg font-semibold">{booking.vehicleNumber}</h3>
+            <li
+              key={booking._id}
+              className="border p-4 rounded-lg shadow-sm bg-gray-50"
+            >
+              {/* Booking Header */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 flex-wrap">
+                <h3 className="text-base sm:text-lg font-semibold">
+                  {booking.service}
+                </h3>
+                <h3 className="text-base sm:text-lg font-semibold">
+                  {booking.vehicleName}
+                </h3>
+                <h3 className="text-base sm:text-lg font-semibold">
+                  {booking.vehicleNumber}
+                </h3>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    booking.status === "Completed"
+                  className={`px-3 py-1 rounded-full text-xs sm:text-sm text-center ${
+                    booking.status === "COMPLETED"
                       ? "bg-green-100 text-green-700"
-                      : booking.status === "Accepted"
+                      : booking.status === "ACCEPTED"
                       ? "bg-blue-100 text-blue-700"
                       : "bg-yellow-100 text-yellow-800"
                   }`}
@@ -73,8 +103,10 @@ const UserProfile = () => {
                   {booking.status}
                 </span>
               </div>
-              <p className="text-sm text-gray-600">
-                Date: {new Date(booking.bookingDate).toLocaleDateString()} at{" "}
+
+              {/* Booking Date */}
+              <p className="text-xs sm:text-sm text-gray-600 mt-2">
+                DATE: {new Date(booking.bookingDate).toLocaleDateString()} AT{" "}
                 {booking.bookingTime}
               </p>
             </li>

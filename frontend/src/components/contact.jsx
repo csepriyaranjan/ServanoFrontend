@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Loader from "./loader";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -20,7 +21,7 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("https://api.example.com/contact", form);
+      await axios.post("https://formsubmit.co/hasimazatube@gmail.com", form);
       alert("Message sent!");
       setForm({
         firstName: "",
@@ -119,6 +120,7 @@ const Contact = () => {
           </div>
 
           {/* Contact Form */}
+          { loading && <Loader />}
           <div className="bg-gray-50 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Send Us a Message
