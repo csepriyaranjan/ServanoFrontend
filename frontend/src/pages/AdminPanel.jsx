@@ -129,10 +129,10 @@ const handleStatusChange = async (id, newStatus) => {
                     }
                     className="mt-1 border rounded px-2 py-1 bg-gray-900 text-white border-gray-600"
                   >
-                    <option value="Pending">PENDING</option>
-                    <option value="Accepted">ACCEPTED</option>
-                    <option value="Completed">COMPLETED</option>
-                    <option value="Canceled">CANCELED</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Canceled">Canceled</option>
                   </select>
 
                   <button
