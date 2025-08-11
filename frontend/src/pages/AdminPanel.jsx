@@ -20,7 +20,7 @@ const AdminPanel = () => {
     try {
       const res = await API.get("/bookings");
 
-      // Convert all string values to uppercase before setting state
+      // Convert status (and other strings) to uppercase
       const upperCaseBookings = res.data.map((b) => ({
         ...b,
         user: b.user ? { ...b.user, name: b.user.name?.toUpperCase() } : null,
@@ -41,28 +41,27 @@ const AdminPanel = () => {
     }
   };
 
-const handleStatusChange = async (id, newStatus) => {
-  setLoading(true);
-  try {
-    await API.put(`/bookings/${id}/status`, { status: newStatus });
+  const handleStatusChange = async (id, newStatus) => {
+    setLoading(true);
+    try {
+      await API.put(`/bookings/${id}/status`, { status: newStatus });
 
-    // Update local state directly for the changed booking
-    setBookings((prevBookings) =>
-      prevBookings.map((booking) =>
-        booking._id === id ? { ...booking, status: newStatus } : booking
-      )
-    );
-  } catch (err) {
-    if (err.response?.status === 403) {
-      navigate("/profile");
-    } else {
-      console.error("Error updating booking status", err);
+      // Update local state to reflect change immediately
+      setBookings((prevBookings) =>
+        prevBookings.map((booking) =>
+          booking._id === id ? { ...booking, status: newStatus } : booking
+        )
+      );
+    } catch (err) {
+      if (err.response?.status === 403) {
+        navigate("/profile");
+      } else {
+        console.error("Error updating booking status", err);
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const handleDeleteBooking = async (id) => {
     setLoading(true);
@@ -86,11 +85,8 @@ const handleStatusChange = async (id, newStatus) => {
         <header className="bg-gray-950 shadow">
           <div className="max-w-7xl mx-auto justify-between px-4 py-6 flex items-center">
             <Link to="/" className="cursor-pointer flex items-center">
-              {" "}
               <img className="h-7 mt-1" src={logo} alt="logo" />
-              <span className="text-2xl ml-2 text-white font-bold">
-                SERVANO
-              </span>
+              <span className="text-2xl ml-2 text-white font-bold">SERVANO</span>
             </Link>
 
             <h1 className="text-2xl font-bold text-white">ADMIN PANEL</h1>
@@ -111,12 +107,10 @@ const handleStatusChange = async (id, newStatus) => {
                     <strong>USER:</strong> {booking.user?.name || "N/A"}
                   </p>
                   <p className="text-gray-200">
-                    <strong>VEHICLE:</strong> {booking.vehicleName} -{" "}
-                    {booking.vehicleNumber}
+                    <strong>VEHICLE:</strong> {booking.vehicleName} - {booking.vehicleNumber}
                   </p>
                   <p className="text-gray-200">
-                    <strong>DATE:</strong>{" "}
-                    {new Date(booking.bookingDate).toLocaleDateString()}
+                    <strong>DATE:</strong> {new Date(booking.bookingDate).toLocaleDateString()}
                   </p>
 
                   <label className="text-gray-200">
@@ -124,15 +118,13 @@ const handleStatusChange = async (id, newStatus) => {
                   </label>
                   <select
                     value={booking.status}
-                    onChange={(e) =>
-                      handleStatusChange(booking._id, e.target.value)
-                    }
+                    onChange={(e) => handleStatusChange(booking._id, e.target.value)}
                     className="mt-1 border rounded px-2 py-1 bg-gray-900 text-white border-gray-600"
                   >
-                    <option value="Pending">Pending</option>
-                    <option value="Accepted">Accepted</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Canceled">Canceled</option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="ACCEPTED">ACCEPTED</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                    <option value="CANCELED">CANCELED</option>
                   </select>
 
                   <button
