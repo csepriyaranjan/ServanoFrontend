@@ -121,9 +121,10 @@ const AdminPanel = () => {
                     }
                     className="mt-1 border rounded px-2 py-1 bg-gray-900 text-white border-gray-600"
                   >
-                    <option value="PENDING">PENDING</option>
-                    <option value="ACCEPTED">ACCEPTED</option>
-                    <option value="COMPLETED">COMPLETED</option>
+                    <option value="Pending">PENDING</option>
+                    <option value="Accepted">ACCEPTED</option>
+                    <option value="Completed">COMPLETED</option>
+                    <option value="Canceled">CANCELED</option>
                   </select>
 
                   <button
