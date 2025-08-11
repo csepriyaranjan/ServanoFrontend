@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "./api";
-import Loader from "./Loader";
+import Loader from "./loader";
 
 const BookServices = () => {
   const { serviceName } = useParams();
