@@ -20,16 +20,16 @@ const AdminPanel = () => {
     try {
       const res = await API.get("/bookings");
 
-      // Convert status (and other strings) to uppercase
-      const upperCaseBookings = res.data.map((b) => ({
+      // Keep status and other strings as is (title case)
+      const bookingsData = res.data.map((b) => ({
         ...b,
-        user: b.user ? { ...b.user, name: b.user.name?.toUpperCase() } : null,
-        vehicleName: b.vehicleName?.toUpperCase(),
-        vehicleNumber: b.vehicleNumber?.toUpperCase(),
-        status: b.status?.toUpperCase(),
+        user: b.user ? { ...b.user, name: b.user.name } : null,
+        vehicleName: b.vehicleName,
+        vehicleNumber: b.vehicleNumber,
+        status: b.status, // Keep original title case
       }));
 
-      setBookings(upperCaseBookings);
+      setBookings(bookingsData);
     } catch (err) {
       if (err.response?.status === 403) {
         navigate("/profile");
@@ -46,7 +46,7 @@ const AdminPanel = () => {
     try {
       await API.put(`/bookings/${id}/status`, { status: newStatus });
 
-      // Update local state to reflect change immediately
+      // Update local state immediately after successful update
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
           booking._id === id ? { ...booking, status: newStatus } : booking
@@ -121,10 +121,10 @@ const AdminPanel = () => {
                     onChange={(e) => handleStatusChange(booking._id, e.target.value)}
                     className="mt-1 border rounded px-2 py-1 bg-gray-900 text-white border-gray-600"
                   >
-                    <option value="PENDING">PENDING</option>
-                    <option value="ACCEPTED">ACCEPTED</option>
-                    <option value="COMPLETED">COMPLETED</option>
-                    <option value="CANCELED">CANCELED</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Canceled">Canceled</option>
                   </select>
 
                   <button
