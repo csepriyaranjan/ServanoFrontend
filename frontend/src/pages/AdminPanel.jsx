@@ -41,27 +41,30 @@ const AdminPanel = () => {
     }
   };
 
-  const handleStatusChange = async (id, newStatus) => {
-    setLoading(true);
-    try {
-      await API.put(`/bookings/${id}/status`, { status: newStatus });
+ const handleStatusChange = async (id, newStatus) => {
+  setLoading(true);
+  try {
+    console.log("Updating booking", id, "to status:", newStatus);
+    const cleanStatus = newStatus.trim();
 
-      // Update local state immediately after successful update
-      setBookings((prevBookings) =>
-        prevBookings.map((booking) =>
-          booking._id === id ? { ...booking, status: newStatus } : booking
-        )
-      );
-    } catch (err) {
-      if (err.response?.status === 403) {
-        navigate("/profile");
-      } else {
-        console.error("Error updating booking status", err);
-      }
-    } finally {
-      setLoading(false);
+    await API.put(`/bookings/${id}/status`, { status: cleanStatus });
+
+    setBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === id ? { ...booking, status: cleanStatus } : booking
+      )
+    );
+  } catch (err) {
+    if (err.response?.status === 403) {
+      navigate("/profile");
+    } else {
+      console.error("Error updating booking status", err);
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleDeleteBooking = async (id) => {
     setLoading(true);
